@@ -1,0 +1,421 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.app { max-width: 680px; padding: 1.5rem 0; }
+.tabs { display: flex; gap: 4px; background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 4px; margin-bottom: 1.5rem; }
+.tab { flex: 1; padding: 8px 12px; border: none; background: transparent; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-secondary); }
+.section { display: none; }
+.section.active { display: block; }
+.header-card { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
+.voc-badge { width: 44px; height: 44px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #0C447C; flex-shrink: 0; }
+.header-card h2 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+.header-card p { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+.stats-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.stat-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.form-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.form-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 1rem; color: var(--color-text-primary); }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 5px; }
+.field input, .field select { width: 100%; padding: 8px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans); }
+.field input:focus, .field select:focus { outline: none; border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.15); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.btn { width: 100%; padding: 10px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; font-family: var(--font-sans); }
+.btn-primary { background: #185FA5; color: #E6F1FB; border-color: #185FA5; }
+.btn-primary:hover { background: #0C447C; }
+.btn-tikkie { background: #1A9E6F; color: #E1F5EE; border-color: #0F6E56; margin-top: 8px; }
+.btn-tikkie:hover { background: #0F6E56; }
+.btn-secondary { background: transparent; color: var(--color-text-primary); }
+.btn-secondary:hover { background: var(--color-background-secondary); }
+.verkoper-info { background: var(--color-background-info, #E6F1FB); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #0C447C; display: none; }
+.verkoper-info.show { display: block; }
+.success-toast { background: #EAF3DE; border: 0.5px solid #97C459; border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: #27500A; margin-bottom: 14px; display: none; align-items: center; gap: 8px; }
+.success-toast.show { display: flex; }
+.list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.list-header h3 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.filter-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.filter-row select, .filter-row input { flex: 1; padding: 7px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 13px; background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans); }
+.abo-item { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.abo-left { flex: 1; min-width: 0; }
+.abo-name { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.abo-detail { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+.abo-verkoper { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+.abo-right { text-align: right; flex-shrink: 0; }
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: var(--border-radius-md); }
+.badge-betaald { background: #EAF3DE; color: #27500A; }
+.badge-open { background: #FAEEDA; color: #633806; }
+.badge-jeugd { background: #E6F1FB; color: #0C447C; margin-left: 6px; }
+.badge-selectie { background: #EEEDFE; color: #3C3489; margin-left: 6px; }
+.abo-amount { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin-top: 4px; }
+.tikkie-btn-small { font-size: 12px; padding: 4px 10px; border: 0.5px solid #0F6E56; border-radius: var(--border-radius-md); background: transparent; color: #0F6E56; cursor: pointer; margin-top: 6px; font-family: var(--font-sans); }
+.tikkie-btn-small:hover { background: #E1F5EE; }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--color-text-secondary); font-size: 14px; }
+.ledenboard { }
+.lid-row { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 16px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.lid-info { display: flex; align-items: center; gap: 10px; }
+.lid-avatar { width: 36px; height: 36px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: font-size: 13px; font-weight: 500; color: #0C447C; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #0C447C; flex-shrink: 0; }
+.lid-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.lid-type { font-size: 12px; color: var(--color-text-secondary); }
+.lid-stats { text-align: right; }
+.lid-earned { font-size: 14px; font-weight: 500; color: #0F6E56; }
+.lid-club { font-size: 12px; color: var(--color-text-secondary); }
+.progress-bar { height: 4px; background: var(--color-border-tertiary); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: #378ADD; border-radius: 2px; transition: width 0.3s; }
+.progress-fill.done { background: #639922; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin: 1.5rem 0 0.75rem; }
+</style>
+
+<h2 class="sr-only">VOC Magazine Abonnement App — leden kunnen abonnementen registreren en Tikkie's versturen</h2>
+
+<div class="app">
+  <div class="header-card">
+    <div class="voc-badge">VOC</div>
+    <div>
+      <h2>Magazine Abonnementen</h2>
+      <p>Registreer nieuwe abonnees · € 60,00 per jaar</p>
+    </div>
+  </div>
+
+  <div class="stats-row" id="statsRow">
+    <div class="stat">
+      <div class="stat-label">Totaal verkocht</div>
+      <div class="stat-value" id="statTotal">0</div>
+      <div class="stat-sub">abonnementen</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Naar de club</div>
+      <div class="stat-value" id="statClub">€ 0</div>
+      <div class="stat-sub">totaal</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Openstaand</div>
+      <div class="stat-value" id="statOpen">0</div>
+      <div class="stat-sub">tikkie's</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('nieuw')"><i class="ti ti-plus" aria-hidden="true"></i> Nieuw</button>
+    <button class="tab" onclick="switchTab('overzicht')"><i class="ti ti-list" aria-hidden="true"></i> Overzicht</button>
+    <button class="tab" onclick="switchTab('leden')"><i class="ti ti-users" aria-hidden="true"></i> Leden</button>
+  </div>
+
+  <div id="tab-nieuw" class="section active">
+    <div class="success-toast" id="successToast">
+      <i class="ti ti-check" aria-hidden="true"></i>
+      <span id="successMsg">Abonnement geregistreerd!</span>
+    </div>
+
+    <div class="form-card">
+      <h3><i class="ti ti-user-plus" aria-hidden="true" style="margin-right:6px"></i>Verkopend lid</h3>
+      <div class="row2">
+        <div class="field">
+          <label>Jouw naam</label>
+          <input type="text" id="verkoperNaam" placeholder="Voor- en achternaam" oninput="updateVerkoperInfo()">
+        </div>
+        <div class="field">
+          <label>Type lid</label>
+          <select id="verkoperType" onchange="updateVerkoperInfo()">
+            <option value="">Selecteer...</option>
+            <option value="jeugd">Jeugdlid</option>
+            <option value="selectie">Selectielid</option>
+          </select>
+        </div>
+      </div>
+      <div class="verkoper-info" id="verkoperInfo"></div>
+    </div>
+
+    <div class="form-card">
+      <h3><i class="ti ti-id" aria-hidden="true" style="margin-right:6px"></i>Gegevens abonnee</h3>
+      <div class="row2">
+        <div class="field">
+          <label>Voornaam</label>
+          <input type="text" id="voornaam" placeholder="Voornaam">
+        </div>
+        <div class="field">
+          <label>Achternaam</label>
+          <input type="text" id="achternaam" placeholder="Achternaam">
+        </div>
+      </div>
+      <div class="field">
+        <label>Straat en huisnummer</label>
+        <input type="text" id="straat" placeholder="Dorpsstraat 12">
+      </div>
+      <div class="row3">
+        <div class="field">
+          <label>Postcode</label>
+          <input type="text" id="postcode" placeholder="1234 AB" maxlength="7">
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label>Woonplaats</label>
+          <input type="text" id="woonplaats" placeholder="Medemblik">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>E-mailadres</label>
+          <input type="email" id="email" placeholder="naam@email.nl">
+        </div>
+        <div class="field">
+          <label>Telefoonnummer</label>
+          <input type="tel" id="telefoon" placeholder="06 12345678">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="registreerAbonnement()">
+      <i class="ti ti-device-floppy" aria-hidden="true" style="margin-right:6px"></i>Abonnement registreren
+    </button>
+    <button class="btn btn-tikkie" id="tikkieBtn" style="display:none" onclick="openTikkie()">
+      <i class="ti ti-brand-whatsapp" aria-hidden="true" style="margin-right:6px"></i>Tikkie versturen (€ 60,00) ↗
+    </button>
+  </div>
+
+  <div id="tab-overzicht" class="section">
+    <div class="list-header">
+      <h3>Alle abonnementen</h3>
+      <span id="countLabel" style="font-size:13px; color: var(--color-text-secondary);">0 totaal</span>
+    </div>
+    <div class="filter-row">
+      <input type="text" id="zoekInput" placeholder="Zoek op naam..." oninput="renderOverzicht()">
+      <select id="filterStatus" onchange="renderOverzicht()">
+        <option value="">Alle statussen</option>
+        <option value="open">Openstaand</option>
+        <option value="betaald">Betaald</option>
+      </select>
+      <select id="filterType" onchange="renderOverzicht()">
+        <option value="">Alle leden</option>
+        <option value="jeugd">Jeugd</option>
+        <option value="selectie">Selectie</option>
+      </select>
+    </div>
+    <div id="abonneeList"></div>
+  </div>
+
+  <div id="tab-leden" class="section">
+    <div class="list-header">
+      <h3>Verkopende leden</h3>
+    </div>
+    <div id="ledenList"></div>
+  </div>
+</div>
+
+<script>
+let abonnementen = [];
+let lastRegistered = null;
+
+const CLUB_JEUGD = 100;
+const CLUB_SELECTIE = 200;
+const PRIJS = 60;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['nieuw','overzicht','leden'][i] === tab));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'overzicht') renderOverzicht();
+  if (tab === 'leden') renderLeden();
+}
+
+function updateVerkoperInfo() {
+  const naam = document.getElementById('verkoperNaam').value.trim();
+  const type = document.getElementById('verkoperType').value;
+  const box = document.getElementById('verkoperInfo');
+  if (!naam || !type) { box.classList.remove('show'); return; }
+  const drempel = type === 'jeugd' ? CLUB_JEUGD : CLUB_SELECTIE;
+  const nrNodig = Math.ceil(drempel / PRIJS);
+  const eigenVerkopen = abonnementen.filter(a => a.verkoperNaam.toLowerCase() === naam.toLowerCase() && a.verkoperType === type);
+  const totaalVerkocht = eigenVerkopen.length * PRIJS;
+  const naarClub = Math.min(totaalVerkocht, drempel);
+  const voorLid = Math.max(0, totaalVerkocht - drempel);
+  box.innerHTML = `<i class="ti ti-info-circle" aria-hidden="true" style="margin-right:6px"></i>
+    <strong>${naam}</strong> — minimaal <strong>${nrNodig} abonnementen</strong> (€ ${drempel} naar de club) · 
+    Verkocht: <strong>${eigenVerkopen.length}</strong> · Naar club: <strong>€ ${naarClub}</strong> · Voor jou: <strong>€ ${voorLid}</strong>`;
+  box.classList.add('show');
+}
+
+function registreerAbonnement() {
+  const verkoperNaam = document.getElementById('verkoperNaam').value.trim();
+  const verkoperType = document.getElementById('verkoperType').value;
+  const voornaam = document.getElementById('voornaam').value.trim();
+  const achternaam = document.getElementById('achternaam').value.trim();
+  const straat = document.getElementById('straat').value.trim();
+  const postcode = document.getElementById('postcode').value.trim();
+  const woonplaats = document.getElementById('woonplaats').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const telefoon = document.getElementById('telefoon').value.trim();
+
+  if (!verkoperNaam || !verkoperType || !voornaam || !achternaam || !straat || !postcode || !woonplaats) {
+    alert('Vul alle verplichte velden in (naam, adres en verkopend lid).');
+    return;
+  }
+
+  const abo = {
+    id: Date.now(),
+    verkoperNaam, verkoperType,
+    voornaam, achternaam, straat, postcode, woonplaats, email, telefoon,
+    datum: new Date().toLocaleDateString('nl-NL'),
+    status: 'open',
+    bedrag: PRIJS
+  };
+  abonnementen.push(abo);
+  lastRegistered = abo;
+
+  document.getElementById('successMsg').textContent = `✓ Abonnement voor ${voornaam} ${achternaam} geregistreerd!`;
+  document.getElementById('successToast').classList.add('show');
+  document.getElementById('tikkieBtn').style.display = 'block';
+  setTimeout(() => document.getElementById('successToast').classList.remove('show'), 4000);
+
+  ['voornaam','achternaam','straat','postcode','woonplaats','email','telefoon'].forEach(id => document.getElementById(id).value = '');
+  updateStats();
+  updateVerkoperInfo();
+}
+
+function openTikkie() {
+  if (!lastRegistered) return;
+  const naam = `${lastRegistered.voornaam} ${lastRegistered.achternaam}`;
+  const omschrijving = encodeURIComponent(`VOC Magazine abonnement - ${naam}`);
+  const url = `https://tikkie.me/pay/request?amount=6000&description=${omschrijving}`;
+  window.open(url, '_blank');
+}
+
+function markeerBetaald(id) {
+  const abo = abonnementen.find(a => a.id === id);
+  if (abo) { abo.status = 'betaald'; renderOverzicht(); updateStats(); }
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = abonnementen.length;
+  let club = 0;
+  const verkopers = {};
+  abonnementen.forEach(a => {
+    const key = a.verkoperNaam + '_' + a.verkoperType;
+    verkopers[key] = (verkopers[key] || { type: a.verkoperType, count: 0 });
+    verkopers[key].count++;
+  });
+  Object.values(verkopers).forEach(v => {
+    const drempel = v.type === 'jeugd' ? CLUB_JEUGD : CLUB_SELECTIE;
+    club += Math.min(v.count * PRIJS, drempel);
+  });
+  document.getElementById('statClub').textContent = '€ ' + club.toLocaleString('nl-NL');
+  document.getElementById('statOpen').textContent = abonnementen.filter(a => a.status === 'open').length;
+}
+
+function renderOverzicht() {
+  const zoek = document.getElementById('zoekInput').value.toLowerCase();
+  const filterStatus = document.getElementById('filterStatus').value;
+  const filterType = document.getElementById('filterType').value;
+  let filtered = abonnementen.filter(a => {
+    const naam = `${a.voornaam} ${a.achternaam}`.toLowerCase();
+    return (!zoek || naam.includes(zoek) || a.verkoperNaam.toLowerCase().includes(zoek))
+      && (!filterStatus || a.status === filterStatus)
+      && (!filterType || a.verkoperType === filterType);
+  });
+  document.getElementById('countLabel').textContent = filtered.length + ' abonnement' + (filtered.length !== 1 ? 'en' : '');
+  const container = document.getElementById('abonneeList');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><i class="ti ti-inbox" style="font-size:32px; display:block; margin-bottom:8px"></i>Nog geen abonnementen gevonden</div>';
+    return;
+  }
+  container.innerHTML = filtered.slice().reverse().map(a => `
+    <div class="abo-item">
+      <div class="abo-left">
+        <div class="abo-name">${a.voornaam} ${a.achternaam}
+          <span class="badge badge-${a.verkoperType}">${a.verkoperType}</span>
+        </div>
+        <div class="abo-detail"><i class="ti ti-home" style="font-size:12px" aria-hidden="true"></i> ${a.straat}, ${a.postcode} ${a.woonplaats}</div>
+        ${a.email ? `<div class="abo-detail"><i class="ti ti-mail" style="font-size:12px" aria-hidden="true"></i> ${a.email}</div>` : ''}
+        <div class="abo-verkoper"><i class="ti ti-user" style="font-size:12px" aria-hidden="true"></i> Verkoper: ${a.verkoperNaam} · ${a.datum}</div>
+      </div>
+      <div class="abo-right">
+        <span class="badge badge-${a.status}">${a.status === 'betaald' ? 'Betaald' : 'Openstaand'}</span>
+        <div class="abo-amount">€ ${a.bedrag}</div>
+        ${a.status === 'open' ? `<button class="tikkie-btn-small" onclick="markeerBetaald(${a.id})">✓ Betaald</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderLeden() {
+  const verkopers = {};
+  abonnementen.forEach(a => {
+    const key = a.verkoperNaam + '_' + a.verkoperType;
+    if (!verkopers[key]) verkopers[key] = { naam: a.verkoperNaam, type: a.verkoperType, count: 0, betaald: 0 };
+    verkopers[key].count++;
+    if (a.status === 'betaald') verkopers[key].betaald++;
+  });
+
+  const container = document.getElementById('ledenList');
+  const lijst = Object.values(verkopers);
+  if (lijst.length === 0) {
+    container.innerHTML = '<div class="empty-state"><i class="ti ti-users" style="font-size:32px; display:block; margin-bottom:8px"></i>Nog geen verkopers actief</div>';
+    return;
+  }
+
+  lijst.sort((a,b) => b.count - a.count);
+
+  const jeugd = lijst.filter(l => l.type === 'jeugd');
+  const selectie = lijst.filter(l => l.type === 'selectie');
+
+  let html = '';
+  if (jeugd.length) {
+    html += '<div class="section-title">Jeugdleden</div>';
+    jeugd.forEach((l,i) => {
+      const drempel = CLUB_JEUGD;
+      const totaal = l.count * PRIJS;
+      const naarClub = Math.min(totaal, drempel);
+      const voorLid = Math.max(0, totaal - drempel);
+      const nrNodig = Math.ceil(drempel / PRIJS);
+      const pct = Math.min(100, Math.round((l.count / nrNodig) * 100));
+      const initials = l.naam.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+      html += `<div class="lid-row">
+        <div class="lid-info">
+          <div class="lid-avatar">${initials}</div>
+          <div>
+            <div class="lid-name">${l.naam}</div>
+            <div class="lid-type">${l.count} abonnement${l.count!==1?'en':''} · doel: ${nrNodig}</div>
+            <div class="progress-bar"><div class="progress-fill ${pct>=100?'done':''}" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="lid-stats">
+          <div class="lid-earned">€ ${voorLid} voor lid</div>
+          <div class="lid-club">€ ${naarClub} naar club</div>
+        </div>
+      </div>`;
+    });
+  }
+
+  if (selectie.length) {
+    html += '<div class="section-title">Selectieleden</div>';
+    selectie.forEach((l,i) => {
+      const drempel = CLUB_SELECTIE;
+      const totaal = l.count * PRIJS;
+      const naarClub = Math.min(totaal, drempel);
+      const voorLid = Math.max(0, totaal - drempel);
+      const nrNodig = Math.ceil(drempel / PRIJS);
+      const pct = Math.min(100, Math.round((l.count / nrNodig) * 100));
+      const initials = l.naam.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+      html += `<div class="lid-row">
+        <div class="lid-info">
+          <div class="lid-avatar" style="background:#EEEDFE; color:#3C3489">${initials}</div>
+          <div>
+            <div class="lid-name">${l.naam}</div>
+            <div class="lid-type">${l.count} abonnement${l.count!==1?'en':''} · doel: ${nrNodig}</div>
+            <div class="progress-bar"><div class="progress-fill ${pct>=100?'done':''}" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="lid-stats">
+          <div class="lid-earned">€ ${voorLid} voor lid</div>
+          <div class="lid-club">€ ${naarClub} naar club</div>
+        </div>
+      </div>`;
+    });
+  }
+
+  container.innerHTML = html;
+}
+</script>
