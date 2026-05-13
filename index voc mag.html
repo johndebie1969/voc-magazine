@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOC Magazine — Abonnementen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-50: #E6F1FB;
+      --blue-100: #B5D4F4;
+      --blue-400: #378ADD;
+      --blue-600: #185FA5;
+      --blue-800: #0C447C;
+      --blue-900: #042C53;
+      --green-50: #EAF3DE;
+      --green-400: #639922;
+      --green-600: #3B6D11;
+      --green-800: #27500A;
+      --amber-50: #FAEEDA;
+      --amber-800: #633806;
+      --purple-50: #EEEDFE;
+      --purple-800: #3C3489;
+      --gray-50: #F1EFE8;
+      --gray-100: #D3D1C7;
+      --gray-400: #888780;
+      --gray-600: #5F5E5A;
+      --gray-800: #444441;
+      --red-50: #FCEBEB;
+      --red-600: #A32D2D;
+      --bg: #F7F5F0;
+      --surface: #FFFFFF;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.18);
+      --text: #1A1A18;
+      --text-muted: #5F5E5A;
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+    }
+
+    /* HEADER */
+    .site-header {
+      background: var(--blue-900);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .site-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--blue-400);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: #fff;
+      letter-spacing: 0.02em;
+    }
+    .logo-text { font-family: 'DM Serif Display', serif; color: #fff; font-size: 18px; }
+    .logo-sub { font-size: 12px; color: var(--blue-100); margin-top: 1px; }
+    .header-badge {
+      background: rgba(255,255,255,0.12);
+      color: var(--blue-100);
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 0.5px solid rgba(255,255,255,0.2);
+    }
+
+    /* LAYOUT */
+    .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem; }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 1.75rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+    .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .stat-value { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
+    .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      padding: 4px;
+      margin-bottom: 1.5rem;
+      border: 0.5px solid var(--border);
+    }
+    .tab {
+      flex: 1; padding: 9px 12px;
+      border: none; background: transparent;
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .tab svg { width: 15px; height: 15px; }
+    .tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .tab:hover:not(.active) { background: rgba(0,0,0,0.04); color: var(--text); }
+
+    /* SECTION */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 14px; font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .card-title svg { width: 16px; height: 16px; color: var(--blue-400); }
+
+    /* FORM */
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+    .field input, .field select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 3px rgba(55,138,221,0.15);
+    }
+    .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row3 { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+
+    /* VERKOPER INFO */
+    .info-box {
+      background: var(--blue-50);
+      border: 0.5px solid var(--blue-100);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--blue-800);
+      margin-bottom: 12px;
+      display: none;
+      line-height: 1.5;
+    }
+    .info-box.show { display: block; }
+
+    /* BUTTONS */
+    .btn {
+      width: 100%; padding: 11px 16px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      border: 1px solid transparent;
+    }
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .btn-primary { background: var(--blue-600); color: #fff; border-color: var(--blue-600); }
+    .btn-primary:hover { background: var(--blue-800); }
+    .btn-tikkie { background: #fff; color: var(--green-600); border-color: var(--green-400); margin-top: 8px; }
+    .btn-tikkie:hover { background: var(--green-50); }
+    .btn-export { background: #fff; color: var(--gray-800); border-color: var(--border-strong); }
+    .btn-export:hover { background: var(--gray-50); }
+
+    /* TOAST */
+    .toast {
+      background: var(--green-50);
+      border: 0.5px solid var(--green-400);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--green-800);
+      margin-bottom: 12px;
+      display: none;
+      align-items: center; gap: 8px;
+    }
+    .toast.show { display: flex; }
+    .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* FILTERS */
+    .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .list-header h3 { font-size: 16px; font-weight: 600; }
+    .count-label { font-size: 13px; color: var(--text-muted); }
+    .filter-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .filter-row input, .filter-row select {
+      flex: 1; min-width: 120px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: var(--text); background: var(--surface);
+    }
+    .filter-row select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; -webkit-appearance: none; }
+
+    /* ABO ITEMS */
+    .abo-item {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      transition: box-shadow 0.15s;
+    }
+    .abo-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .abo-name { font-size: 15px; font-weight: 600; color: var(--text); }
+    .abo-detail { font-size: 13px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+    .abo-verkoper { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+    .abo-right { text-align: right; flex-shrink: 0; }
+    .abo-amount { font-size: 16px; font-weight: 600; color: var(--text); margin-top: 4px; }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      font-size: 11px; font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .badge-betaald { background: var(--green-50); color: var(--green-800); }
+    .badge-open { background: var(--amber-50); color: var(--amber-800); }
+    .badge-jeugd { background: var(--blue-50); color: var(--blue-800); margin-left: 6px; }
+    .badge-selectie { background: var(--purple-50); color: var(--purple-800); margin-left: 6px; }
+
+    .betaald-btn {
+      font-size: 12px; padding: 4px 10px;
+      border: 1px solid var(--green-400);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--green-600);
+      cursor: pointer;
+      margin-top: 6px;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.1s;
+    }
+    .betaald-btn:hover { background: var(--green-50); }
+
+    /* LEDENBOARD */
+    .section-label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin: 1.5rem 0 0.6rem;
+    }
+    .lid-row {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .lid-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--blue-50);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; color: var(--blue-800);
+      flex-shrink: 0;
+    }
+    .lid-avatar.selectie { background: var(--purple-50); color: var(--purple-800); }
+    .lid-info-block { flex: 1; min-width: 0; }
+    .lid-name { font-size: 14px; font-weight: 600; }
+    .lid-type { font-size: 12px; color: var(--text-muted); }
+    .progress-bar {
+      height: 4px; background: var(--gray-100);
+      border-radius: 2px; margin-top: 6px; overflow: hidden;
+    }
+    .progress-fill { height: 100%; background: var(--blue-400); border-radius: 2px; transition: width 0.4s; }
+    .progress-fill.done { background: var(--green-400); }
+    .lid-money { text-align: right; }
+    .lid-earned { font-size: 14px; font-weight: 600; color: var(--green-600); }
+    .lid-club { font-size: 12px; color: var(--text-muted); }
+
+    /* EMPTY */
+    .empty {
+      text-align: center; padding: 3.5rem 1rem;
+      color: var(--text-muted); font-size: 14px;
+    }
+    .empty svg { width: 36px; height: 36px; margin-bottom: 10px; opacity: 0.4; display: block; margin-left: auto; margin-right: auto; }
+
+    /* EXPORT ROW */
+    .export-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+    .export-row .btn { width: auto; flex: 1; }
+
+    /* MOBILE */
+    @media (max-width: 500px) {
+      .stats-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .stat-value { font-size: 20px; }
+      .row2, .row3 { grid-template-columns: 1fr; }
+      .abo-item { flex-direction: column; }
+      .abo-right { text-align: left; display: flex; align-items: center; gap: 10px; }
+      .container { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <div class="logo-badge">VOC</div>
+    <div>
+      <div class="logo-text">Magazine</div>
+      <div class="logo-sub">Abonnementen beheer</div>
+    </div>
+  </div>
+  <div class="header-badge">€ 60,00 / jaar</div>
+</header>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Totaal verkocht</div>
+      <div class="stat-value" id="statTotal">0</div>
+      <div class="stat-sub">abonnementen</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Naar de club</div>
+      <div class="stat-value" id="statClub">€ 0</div>
+      <div class="stat-sub">totaal</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Openstaand</div>
+      <div class="stat-value" id="statOpen">0</div>
+      <div class="stat-sub">tikkie's</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('nieuw')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      Nieuw
+    </button>
+    <button class="tab" onclick="switchTab('overzicht')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2"/></svg>
+      Overzicht
+    </button>
+    <button class="tab" onclick="switchTab('leden')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Leden
+    </button>
+  </div>
+
+  <!-- TAB: NIEUW -->
+  <div id="tab-nieuw" class="section active">
+
+    <div id="toast" class="toast">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+      <span id="toastMsg">Abonnement geregistreerd!</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Verkopend lid
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Jouw naam</label>
+          <input type="text" id="verkoperNaam" placeholder="Voor- en achternaam" oninput="updateVerkoperInfo()">
+        </div>
+        <div class="field">
+          <label>Type lid</label>
+          <select id="verkoperType" onchange="updateVerkoperInfo()">
+            <option value="">Selecteer...</option>
+            <option value="jeugd">Jeugdlid</option>
+            <option value="selectie">Selectielid</option>
+          </select>
+        </div>
+      </div>
+      <div class="info-box" id="verkoperInfo"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 9.5h20"/></svg>
+        NAW-gegevens abonnee
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Voornaam</label>
+          <input type="text" id="voornaam" placeholder="Voornaam">
+        </div>
+        <div class="field">
+          <label>Achternaam</label>
+          <input type="text" id="achternaam" placeholder="Achternaam">
+        </div>
+      </div>
+      <div class="field">
+        <label>Straat en huisnummer</label>
+        <input type="text" id="straat" placeholder="Dorpsstraat 12">
+      </div>
+      <div class="row3">
+        <div class="field">
+          <label>Postcode</label>
+          <input type="text" id="postcode" placeholder="1234 AB" maxlength="7">
+        </div>
+        <div class="field">
+          <label>Woonplaats</label>
+          <input type="text" id="woonplaats" placeholder="Medemblik">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>E-mailadres</label>
+          <input type="email" id="email" placeholder="naam@email.nl">
+        </div>
+        <div class="field">
+          <label>Telefoonnummer</label>
+          <input type="tel" id="telefoon" placeholder="06 12345678">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="registreerAbonnement()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Abonnement registreren
+    </button>
+    <button class="btn btn-tikkie" id="tikkieBtn" style="display:none" onclick="openTikkie()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M15 9.354a4 4 0 1 0 0 5.292"/></svg>
+      Tikkie versturen (€ 60,00) ↗
+    </button>
+  </div>
+
+  <!-- TAB: OVERZICHT -->
+  <div id="tab-overzicht" class="section">
+    <div class="list-header">
+      <h3>Alle abonnementen</h3>
+      <span class="count-label" id="countLabel">0 totaal</span>
+    </div>
+    <div class="export-row">
+      <button class="btn btn-export" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exporteer CSV
+      </button>
+    </div>
+    <div class="filter-row">
+      <input type="text" id="zoekInput" placeholder="Zoek op naam..." oninput="renderOverzicht()">
+      <select id="filterStatus" onchange="renderOverzicht()">
+        <option value="">Alle statussen</option>
+        <option value="open">Openstaand</option>
+        <option value="betaald">Betaald</option>
+      </select>
+      <select id="filterType" onchange="renderOverzicht()">
+        <option value="">Alle leden</option>
+        <option value="jeugd">Jeugd</option>
+        <option value="selectie">Selectie</option>
+      </select>
+    </div>
+    <div id="abonneeList"></div>
+  </div>
+
+  <!-- TAB: LEDEN -->
+  <div id="tab-leden" class="section">
+    <div class="list-header">
+      <h3>Verkopers overzicht</h3>
+    </div>
+    <div id="ledenList"></div>
+  </div>
+
+</div>
+
+<script>
+  const PRIJS = 60;
+  const CLUB_JEUGD = 100;
+  const CLUB_SELECTIE = 200;
+
+  let abonnementen = JSON.parse(localStorage.getItem('voc_abonnementen') || '[]');
+  let lastRegistered = null;
+
+  function save() {
+    localStorage.setItem('voc_abonnementen', JSON.stringify(abonnementen));
+    updateStats();
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', ['nieuw','overzicht','leden'][i] === tab);
+    });
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'overzicht') renderOverzicht();
+    if (tab === 'leden') renderLeden();
+  }
+
+  function updateVerkoperInfo() {
+    const naam = document.getElementById('verkoperNaam').value.trim();
+    const type = document.getElementById('verkoperType').value;
+    const box = document.getElementById('verkoperInfo');
+    if (!naam || !type) { box.classList.remove('show'); return; }
+    const drempel = type === 'jeugd' ? CLUB_JEUGD : CLUB_SELECTIE;
+    const nrNodig = Math.ceil(drempel / PRIJS);
+    const eigen = abonnementen.filter(a => a.verkoperNaam.toLowerCase() === naam.toLowerCase() && a.verkoperType === type);
+    const totaal = eigen.length * PRIJS;
+    const naarClub = Math.min(totaal, drempel);
+    const voorLid = Math.max(0, totaal - drempel);
+    box.innerHTML = `<strong>${naam}</strong> — minimaal <strong>${nrNodig} abonnementen</strong> nodig (€ ${drempel} naar club) &nbsp;·&nbsp; Verkocht: <strong>${eigen.length}</strong> &nbsp;·&nbsp; Naar club: <strong>€ ${naarClub}</strong> &nbsp;·&nbsp; Voor jou: <strong>€ ${voorLid}</strong>`;
+    box.classList.add('show');
+  }
+
+  function registreerAbonnement() {
+    const verkoperNaam = document.getElementById('verkoperNaam').value.trim();
+    const verkoperType = document.getElementById('verkoperType').value;
+    const voornaam = document.getElementById('voornaam').value.trim();
+    const achternaam = document.getElementById('achternaam').value.trim();
+    const straat = document.getElementById('straat').value.trim();
+    const postcode = document.getElementById('postcode').value.trim();
+    const woonplaats = document.getElementById('woonplaats').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const telefoon = document.getElementById('telefoon').value.trim();
+
+    if (!verkoperNaam || !verkoperType || !voornaam || !achternaam || !straat || !postcode || !woonplaats) {
+      alert('Vul alle verplichte velden in.');
+      return;
+    }
+
+    const abo = { id: Date.now(), verkoperNaam, verkoperType, voornaam, achternaam, straat, postcode, woonplaats, email, telefoon, datum: new Date().toLocaleDateString('nl-NL'), status: 'open', bedrag: PRIJS };
+    abonnementen.push(abo);
+    lastRegistered = abo;
+    save();
+
+    document.getElementById('toastMsg').textContent = `✓ Abonnement voor ${voornaam} ${achternaam} geregistreerd!`;
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+    document.getElementById('tikkieBtn').style.display = 'flex';
+    ['voornaam','achternaam','straat','postcode','woonplaats','email','telefoon'].forEach(id => document.getElementById(id).value = '');
+    updateVerkoperInfo();
+  }
+
+  function openTikkie() {
+    if (!lastRegistered) return;
+    const naam = `${lastRegistered.voornaam} ${lastRegistered.achternaam}`;
+    const omschrijving = encodeURIComponent(`VOC Magazine - ${naam}`);
+    window.open(`https://tikkie.me/pay/request?amount=6000&description=${omschrijving}`, '_blank');
+  }
+
+  function markeerBetaald(id) {
+    const abo = abonnementen.find(a => a.id === id);
+    if (abo) { abo.status = 'betaald'; save(); renderOverzicht(); }
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent = abonnementen.length;
+    const verkopers = {};
+    abonnementen.forEach(a => {
+      const key = a.verkoperNaam + '_' + a.verkoperType;
+      if (!verkopers[key]) verkopers[key] = { type: a.verkoperType, count: 0 };
+      verkopers[key].count++;
+    });
+    let club = 0;
+    Object.values(verkopers).forEach(v => {
+      const drempel = v.type === 'jeugd' ? CLUB_JEUGD : CLUB_SELECTIE;
+      club += Math.min(v.count * PRIJS, drempel);
+    });
+    document.getElementById('statClub').textContent = '€ ' + club.toLocaleString('nl-NL');
+    document.getElementById('statOpen').textContent = abonnementen.filter(a => a.status === 'open').length;
+  }
+
+  function renderOverzicht() {
+    const zoek = document.getElementById('zoekInput').value.toLowerCase();
+    const fs = document.getElementById('filterStatus').value;
+    const ft = document.getElementById('filterType').value;
+    let filtered = abonnementen.filter(a =>
+      (!zoek || `${a.voornaam} ${a.achternaam}`.toLowerCase().includes(zoek) || a.verkoperNaam.toLowerCase().includes(zoek))
+      && (!fs || a.status === fs)
+      && (!ft || a.verkoperType === ft)
+    );
+    document.getElementById('countLabel').textContent = filtered.length + ' abonnement' + (filtered.length !== 1 ? 'en' : '');
+    const c = document.getElementById('abonneeList');
+    if (!filtered.length) {
+      c.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 13V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7m16 0v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5m16 0H4"/></svg>Nog geen abonnementen gevonden</div>';
+      return;
+    }
+    c.innerHTML = [...filtered].reverse().map(a => `
+      <div class="abo-item">
+        <div style="flex:1;min-width:0">
+          <div class="abo-name">${a.voornaam} ${a.achternaam}<span class="badge badge-${a.verkoperType}">${a.verkoperType}</span></div>
+          <div class="abo-detail">📍 ${a.straat}, ${a.postcode} ${a.woonplaats}</div>
+          ${a.email ? `<div class="abo-detail">✉️ ${a.email}</div>` : ''}
+          <div class="abo-verkoper">Verkoper: ${a.verkoperNaam} · ${a.datum}</div>
+        </div>
+        <div class="abo-right">
+          <span class="badge badge-${a.status}">${a.status === 'betaald' ? 'Betaald' : 'Openstaand'}</span>
+          <div class="abo-amount">€ ${a.bedrag}</div>
+          ${a.status === 'open' ? `<button class="betaald-btn" onclick="markeerBetaald(${a.id})">✓ Markeer betaald</button>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  function renderLeden() {
+    const verkopers = {};
+    abonnementen.forEach(a => {
+      const key = a.verkoperNaam + '_' + a.verkoperType;
+      if (!verkopers[key]) verkopers[key] = { naam: a.verkoperNaam, type: a.verkoperType, count: 0 };
+      verkopers[key].count++;
+    });
+    const c = document.getElementById('ledenList');
+    const lijst = Object.values(verkopers);
+    if (!lijst.length) {
+      c.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Nog geen verkopers actief</div>';
+      return;
+    }
+    lijst.sort((a,b) => b.count - a.count);
+    const jeugd = lijst.filter(l => l.type === 'jeugd');
+    const selectie = lijst.filter(l => l.type === 'selectie');
+    let html = '';
+    const renderGroep = (groep, label) => {
+      if (!groep.length) return;
+      html += `<div class="section-label">${label}</div>`;
+      groep.forEach(l => {
+        const drempel = l.type === 'jeugd' ? CLUB_JEUGD : CLUB_SELECTIE;
+        const nrNodig = Math.ceil(drempel / PRIJS);
+        const totaal = l.count * PRIJS;
+        const naarClub = Math.min(totaal, drempel);
+        const voorLid = Math.max(0, totaal - drempel);
+        const pct = Math.min(100, Math.round((l.count / nrNodig) * 100));
+        const initials = l.naam.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
+        html += `<div class="lid-row">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+            <div class="lid-avatar ${l.type}">${initials}</div>
+            <div class="lid-info-block">
+              <div class="lid-name">${l.naam}</div>
+              <div class="lid-type">${l.count} verkocht · doel: ${nrNodig} (€ ${drempel} naar club)</div>
+              <div class="progress-bar"><div class="progress-fill ${pct>=100?'done':''}" style="width:${pct}%"></div></div>
+            </div>
+          </div>
+          <div class="lid-money">
+            <div class="lid-earned">€ ${voorLid} voor lid</div>
+            <div class="lid-club">€ ${naarClub} naar club</div>
+          </div>
+        </div>`;
+      });
+    };
+    renderGroep(jeugd, 'Jeugdleden');
+    renderGroep(selectie, 'Selectieleden');
+    c.innerHTML = html;
+  }
+
+  function exportCSV() {
+    if (!abonnementen.length) { alert('Nog geen abonnementen om te exporteren.'); return; }
+    const headers = ['Voornaam','Achternaam','Straat','Postcode','Woonplaats','E-mail','Telefoon','Verkoper','Type','Status','Datum','Bedrag'];
+    const rows = abonnementen.map(a => [a.voornaam, a.achternaam, a.straat, a.postcode, a.woonplaats, a.email, a.telefoon, a.verkoperNaam, a.verkoperType, a.status, a.datum, a.bedrag]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'voc_abonnementen.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  updateStats();
+</script>
+</body>
+</html>
