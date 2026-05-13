@@ -518,12 +518,23 @@
   const CLUB_JEUGD = 100;
   const CLUB_SELECTIE = 200;
 
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzQKxCLsMOKcKcuZscoJyJoYowjotbtx2YjUWOhetlsc28eG46jHPAyluZpU4wQGuTK/exec';
+
   let abonnementen = JSON.parse(localStorage.getItem('voc_abonnementen') || '[]');
   let lastRegistered = null;
 
   function save() {
     localStorage.setItem('voc_abonnementen', JSON.stringify(abonnementen));
     updateStats();
+  }
+
+  function stuurNaarSheets(data) {
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, type: 'abonnement' })
+    }).catch(err => console.log('Sheets sync fout:', err));
   }
 
   function switchTab(tab) {
@@ -571,6 +582,7 @@
     abonnementen.push(abo);
     lastRegistered = abo;
     save();
+    stuurNaarSheets(abo);
 
     document.getElementById('toastMsg').textContent = `✓ Abonnement voor ${voornaam} ${achternaam} geregistreerd!`;
     const toast = document.getElementById('toast');

@@ -464,11 +464,22 @@
 </div>
 
 <script>
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzQKxCLsMOKcKcuZscoJyJoYowjotbtx2YjUWOhetlsc28eG46jHPAyluZpU4wQGuTK/exec';
+
   let geselecteerdFormaat = null;
   let geselecteerdBedrag = 0;
   let facturen = JSON.parse(localStorage.getItem('voc_facturen') || '[]');
   let huidigFactuurNr = parseInt(localStorage.getItem('voc_factuur_nr') || '30');
   let huidigFactuur = null;
+
+  function stuurNaarSheets(data) {
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, type: 'advertentie' })
+    }).catch(err => console.log('Sheets sync fout:', err));
+  }
 
   const IBAN = 'NL52 INGB 0001 8093 95';
   const BIC = 'INGBL2A';
@@ -530,7 +541,7 @@
 
     facturen.push(huidigFactuur);
     localStorage.setItem('voc_facturen', JSON.stringify(facturen));
-
+    stuurNaarSheets(huidigFactuur);
     toonFactuur(huidigFactuur);
   }
 
