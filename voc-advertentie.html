@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOC Amsterdam — Advertenties Magazine</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-900: #1A3A1F;
+      --green-800: #1F4A25;
+      --green-700: #2A6232;
+      --green-500: #3A8A44;
+      --green-300: #7DC485;
+      --green-100: #D4EDDA;
+      --green-50: #EEF7EF;
+      --gold: #C9A84C;
+      --gold-light: #F5E6C0;
+      --white: #FAFAF8;
+      --gray-100: #F0EDE8;
+      --gray-200: #DDD9D2;
+      --gray-400: #9A9590;
+      --gray-600: #5A5550;
+      --gray-800: #2A2825;
+      --text: #1A1816;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gray-100);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--green-900);
+      padding: 0;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 900px; margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-logo { display: flex; align-items: center; gap: 14px; }
+    .logo-circle {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--green-700);
+      border: 2px solid var(--green-500);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 13px; color: var(--green-100);
+      letter-spacing: 0.05em;
+    }
+    .header-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--white); }
+    .header-sub { font-size: 12px; color: var(--green-300); margin-top: 1px; }
+    .header-tag {
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold);
+      font-size: 12px; padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* LAYOUT */
+    .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.25rem; }
+
+    /* PRIJSKAARTEN */
+    .prijzen-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .prijs-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .prijs-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gray-200);
+      transition: background 0.2s;
+    }
+    .prijs-card:hover { border-color: var(--green-500); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .prijs-card:hover::before { background: var(--green-500); }
+    .prijs-card.selected { border-color: var(--green-700); background: var(--green-50); }
+    .prijs-card.selected::before { background: var(--green-700); }
+    .prijs-icon { font-size: 28px; margin-bottom: 8px; }
+    .prijs-naam { font-size: 13px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .prijs-bedrag { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); }
+    .prijs-bedrag span { font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--gray-400); }
+    .prijs-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--green-700); color: white;
+      display: none; align-items: center; justify-content: center;
+      font-size: 12px; margin: 8px auto 0;
+    }
+    .prijs-card.selected .prijs-check { display: flex; }
+
+    /* FORMULIER */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .prijzen-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .section-card {
+      background: var(--white);
+      border: 0.5px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--gray-400);
+      margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--gray-600); margin-bottom: 5px; letter-spacing: 0.02em; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; color: var(--text);
+      background: var(--white);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--green-500);
+      box-shadow: 0 0 0 3px rgba(58,138,68,0.12);
+    }
+    .field textarea { resize: vertical; min-height: 70px; }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+    }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row3 { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+
+    /* FACTUUR COUNTER */
+    .factuur-meta {
+      background: var(--green-50);
+      border: 1px solid var(--green-100);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px; color: var(--green-800);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* BUTTONS */
+    .btn-row { display: flex; gap: 10px; }
+    .btn {
+      flex: 1; padding: 12px 16px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      border: 1px solid transparent;
+    }
+    .btn-primary { background: var(--green-800); color: white; }
+    .btn-primary:hover { background: var(--green-900); }
+    .btn-secondary { background: white; color: var(--text); border-color: var(--gray-200); }
+    .btn-secondary:hover { background: var(--gray-100); }
+    .btn-print { background: var(--gold); color: var(--green-900); }
+    .btn-print:hover { background: #b8943e; }
+
+    /* OVERLAY */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .overlay.show { display: flex; }
+    .modal {
+      background: white;
+      border-radius: var(--radius-lg);
+      max-width: 720px; width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; background: white; z-index: 10;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 600; }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: none; background: var(--gray-100);
+      cursor: pointer; font-size: 18px; color: var(--gray-600);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: var(--gray-200); }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex; gap: 10px;
+      position: sticky; bottom: 0; background: white;
+    }
+
+    /* FACTUUR PREVIEW */
+    #factuurPreview {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #222;
+    }
+    .fac-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--green-800);
+    }
+    .fac-logo-area { display: flex; align-items: center; gap: 14px; }
+    .fac-logo {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: var(--green-800);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-family: 'DM Serif Display', serif; font-size: 16px;
+    }
+    .fac-org { font-size: 15px; font-weight: 600; color: var(--green-800); }
+    .fac-org-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+    .fac-achievements { font-size: 10px; color: var(--gray-400); margin-top: 4px; }
+    .fac-titles { text-align: right; }
+    .fac-titles .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); }
+    .fac-titles .value { font-size: 13px; color: var(--gray-600); }
+
+    .fac-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
+    .fac-adres-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); margin-bottom: 6px; font-weight: 600; }
+    .fac-adres-naam { font-size: 14px; font-weight: 600; color: var(--green-800); margin-bottom: 2px; }
+
+    .fac-meta { margin-bottom: 1.5rem; }
+    .fac-meta table { width: 100%; }
+    .fac-meta td { padding: 3px 0; font-size: 12px; }
+    .fac-meta td:first-child { color: var(--gray-400); width: 160px; }
+    .fac-meta td:last-child { font-weight: 500; }
+
+    .fac-onderwerp { font-size: 13px; margin-bottom: 1rem; }
+    .fac-aanhef { margin-bottom: 1rem; font-size: 13px; }
+    .fac-intro { margin-bottom: 1.25rem; font-size: 13px; }
+
+    .fac-tabel { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+    .fac-tabel th {
+      background: var(--green-800); color: white;
+      padding: 8px 12px; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+    .fac-tabel th:last-child, .fac-tabel td:last-child { text-align: right; }
+    .fac-tabel td { padding: 10px 12px; border-bottom: 1px solid var(--gray-200); font-size: 13px; }
+    .fac-tabel tr:last-child td { border-bottom: none; }
+    .fac-totaal-rij td { font-weight: 600; font-size: 14px; padding-top: 12px; }
+    .fac-totaal-bedrag { color: var(--green-800); font-size: 16px !important; }
+
+    .fac-betaal { background: var(--green-50); border: 1px solid var(--green-100); border-radius: 8px; padding: 12px 16px; margin-bottom: 1.5rem; font-size: 12px; }
+    .fac-betaal strong { display: block; margin-bottom: 4px; color: var(--green-800); font-size: 13px; }
+
+    .fac-groet { font-size: 13px; margin-bottom: 1.5rem; }
+    .fac-footer {
+      border-top: 1px solid var(--gray-200);
+      padding-top: 10px;
+      font-size: 10px; color: var(--gray-400);
+      text-align: center; line-height: 1.8;
+    }
+
+    /* OVERZICHT */
+    .facturen-list { }
+    .factuur-item {
+      background: white; border: 0.5px solid var(--gray-200);
+      border-radius: var(--radius-lg); padding: 1rem 1.25rem;
+      margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .fi-naam { font-size: 14px; font-weight: 600; }
+    .fi-detail { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .fi-right { text-align: right; }
+    .fi-bedrag { font-size: 15px; font-weight: 600; color: var(--green-700); }
+    .fi-nr { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+    .fi-actions { display: flex; gap: 6px; margin-top: 6px; }
+    .fi-btn {
+      font-size: 11px; padding: 3px 10px;
+      border-radius: 6px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.1s;
+    }
+    .fi-btn-view { border: 1px solid var(--green-500); color: var(--green-700); background: transparent; }
+    .fi-btn-view:hover { background: var(--green-50); }
+    .empty { text-align: center; padding: 3rem 1rem; color: var(--gray-400); font-size: 14px; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: fixed; inset: 0; padding: 2cm; background: white; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <div class="logo-circle">VOC</div>
+      <div>
+        <div class="header-title">VOC Amsterdam</div>
+        <div class="header-sub">Advertenties Magazine</div>
+      </div>
+    </div>
+    <div class="header-tag">Seizoen 2025–2026</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- TABS -->
+  <div style="display:flex;gap:4px;background:white;border-radius:var(--radius);padding:4px;margin-bottom:1.5rem;border:1px solid var(--gray-200)">
+    <button class="btn" id="tabNieuw" onclick="switchTab('nieuw')" style="flex:1;padding:8px;font-size:14px;background:var(--green-800);color:white;border-color:var(--green-800)">➕ Nieuwe advertentie</button>
+    <button class="btn btn-secondary" id="tabOverzicht" onclick="switchTab('overzicht')" style="flex:1;padding:8px;font-size:14px">📋 Facturen overzicht</button>
+  </div>
+
+  <!-- TAB NIEUW -->
+  <div id="tab-nieuw">
+
+    <!-- ADVERTENTIE KEUZE -->
+    <div class="section-card">
+      <div class="section-title">Kies advertentieformaat</div>
+      <div class="prijzen-grid">
+        <div class="prijs-card" onclick="selectFormaat('1/8', 100)" id="card-1/8">
+          <div class="prijs-icon">▪️</div>
+          <div class="prijs-naam">⅛ Pagina</div>
+          <div class="prijs-bedrag">€ 100<span>,-</span></div>
+          <div class="prijs-check">✓</div>
+        </div>
+        <div class="prijs-card" onclick="selectFormaat('1/4', 150)" id="card-1/4">
+          <div class="prijs-icon">◾</div>
+          <div class="prijs-naam">¼ Pagina</div>
+          <div class="prijs-bedrag">€ 150<span>,-</span></div>
+          <div class="prijs-check">✓</div>
+        </div>
+        <div class="prijs-card" onclick="selectFormaat('1/2', 250)" id="card-1/2">
+          <div class="prijs-icon">◼️</div>
+          <div class="prijs-naam">½ Pagina</div>
+          <div class="prijs-bedrag">€ 250<span>,-</span></div>
+          <div class="prijs-check">✓</div>
+        </div>
+        <div class="prijs-card" onclick="selectFormaat('vol', 350)" id="card-vol">
+          <div class="prijs-icon">🔲</div>
+          <div class="prijs-naam">Volledige pagina</div>
+          <div class="prijs-bedrag">€ 350<span>,-</span></div>
+          <div class="prijs-check">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEDRIJFSGEGEVENS -->
+    <div class="section-card">
+      <div class="section-title">NAW-gegevens onderneming</div>
+      <div class="row2">
+        <div class="field">
+          <label>Bedrijfsnaam *</label>
+          <input type="text" id="bedrijfsnaam" placeholder="Naam van de onderneming">
+        </div>
+        <div class="field">
+          <label>Contactpersoon *</label>
+          <input type="text" id="contactpersoon" placeholder="Dhr./Mevr. Voornaam Achternaam">
+        </div>
+      </div>
+      <div class="field">
+        <label>Straat en huisnummer *</label>
+        <input type="text" id="straat" placeholder="Voorbeeldstraat 1">
+      </div>
+      <div class="row3">
+        <div class="field">
+          <label>Postcode *</label>
+          <input type="text" id="postcode" placeholder="1234 AB" maxlength="7">
+        </div>
+        <div class="field">
+          <label>Woonplaats *</label>
+          <input type="text" id="woonplaats" placeholder="Amsterdam">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>E-mailadres</label>
+          <input type="email" id="email" placeholder="info@bedrijf.nl">
+        </div>
+        <div class="field">
+          <label>Telefoonnummer</label>
+          <input type="tel" id="telefoon" placeholder="020 1234567">
+        </div>
+      </div>
+      <div class="field">
+        <label>Opmerking (optioneel)</label>
+        <textarea id="opmerking" placeholder="Bijv. gewenste plaatsing, thema, etc."></textarea>
+      </div>
+    </div>
+
+    <div class="factuur-meta" id="factuurMeta" style="display:none">
+      <span>📄 Factuur wordt aangemaakt als: <strong id="factuurNrPreview"></strong></span>
+      <span>Bedrag: <strong id="bedragPreview"></strong></span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="resetForm()">↺ Wissen</button>
+      <button class="btn btn-primary" onclick="maakFactuur()">
+        📄 Factuur aanmaken & bekijken
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB OVERZICHT -->
+  <div id="tab-overzicht" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h3 style="font-size:16px;font-weight:600">Alle facturen</h3>
+      <span id="overzichtStats" style="font-size:13px;color:var(--gray-400)"></span>
+    </div>
+    <div id="factuurLijst"></div>
+  </div>
+
+</div>
+
+<!-- FACTUUR MODAL -->
+<div class="overlay" id="factuurOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📄 Factuur preview</h3>
+      <button class="modal-close" onclick="sluitModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="printArea">
+        <div id="factuurPreview"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="sluitModal()" style="flex:0;padding:10px 20px">Sluiten</button>
+      <button class="btn btn-print" onclick="printFactuur()">🖨️ Afdrukken / Opslaan als PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let geselecteerdFormaat = null;
+  let geselecteerdBedrag = 0;
+  let facturen = JSON.parse(localStorage.getItem('voc_facturen') || '[]');
+  let huidigFactuurNr = parseInt(localStorage.getItem('voc_factuur_nr') || '30');
+  let huidigFactuur = null;
+
+  const IBAN = 'NL52 INGB 0001 8093 95';
+  const BIC = 'INGBL2A';
+  const KVK = '34255593';
+  const BTW = '8172.96.992';
+
+  function getFactuurNummer() {
+    const jaar = new Date().getFullYear().toString().slice(2);
+    const volg = String(huidigFactuurNr + 1).padStart(3, '0');
+    return `25${jaar}ADV${volg}`;
+  }
+
+  function selectFormaat(formaat, bedrag) {
+    document.querySelectorAll('.prijs-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('card-' + formaat).classList.add('selected');
+    geselecteerdFormaat = formaat;
+    geselecteerdBedrag = bedrag;
+    const nr = getFactuurNummer();
+    document.getElementById('factuurNrPreview').textContent = nr;
+    document.getElementById('bedragPreview').textContent = '€ ' + bedrag + ',-';
+    document.getElementById('factuurMeta').style.display = 'flex';
+  }
+
+  function formatNaam(formaat) {
+    const map = { '1/8': '⅛ pagina advertentie', '1/4': '¼ pagina advertentie', '1/2': '½ pagina advertentie', 'vol': 'Volledige pagina advertentie' };
+    return map[formaat] || formaat;
+  }
+
+  function maakFactuur() {
+    const bedrijfsnaam = document.getElementById('bedrijfsnaam').value.trim();
+    const contactpersoon = document.getElementById('contactpersoon').value.trim();
+    const straat = document.getElementById('straat').value.trim();
+    const postcode = document.getElementById('postcode').value.trim();
+    const woonplaats = document.getElementById('woonplaats').value.trim();
+
+    if (!geselecteerdFormaat) { alert('Selecteer eerst een advertentieformaat.'); return; }
+    if (!bedrijfsnaam || !contactpersoon || !straat || !postcode || !woonplaats) {
+      alert('Vul alle verplichte velden in (*).');
+      return;
+    }
+
+    huidigFactuurNr++;
+    localStorage.setItem('voc_factuur_nr', huidigFactuurNr);
+
+    const jaar = new Date().getFullYear().toString().slice(2);
+    const facNr = `25${jaar}ADV${String(huidigFactuurNr).padStart(3,'0')}`;
+    const datum = new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    huidigFactuur = {
+      id: Date.now(),
+      facNr, datum,
+      bedrijfsnaam, contactpersoon, straat, postcode, woonplaats,
+      email: document.getElementById('email').value.trim(),
+      telefoon: document.getElementById('telefoon').value.trim(),
+      opmerking: document.getElementById('opmerking').value.trim(),
+      formaat: geselecteerdFormaat,
+      bedrag: geselecteerdBedrag
+    };
+
+    facturen.push(huidigFactuur);
+    localStorage.setItem('voc_facturen', JSON.stringify(facturen));
+
+    toonFactuur(huidigFactuur);
+  }
+
+  function toonFactuur(f) {
+    const formatNaamStr = formatNaam(f.formaat);
+    document.getElementById('factuurPreview').innerHTML = `
+      <div class="fac-header">
+        <div class="fac-logo-area">
+          <div class="fac-logo">VOC</div>
+          <div>
+            <div class="fac-org">OTTO Work Force / VOC Amsterdam</div>
+            <div class="fac-org-sub">Handbalvereniging VOC Amsterdam · KvK ${KVK}</div>
+            <div class="fac-achievements">Landskampioen: 1999-2000, 2007-2008, 2008-2009, 2009-2010, 2016-2017, 2017-2018 en 2018-2019</div>
+            <div class="fac-achievements">Nationale Beker: 2005, 2009, 2010, 2016 en 2018 · Supercup: 2008, 2010, 2016 en 2019</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fac-two-col">
+        <div>
+          <div class="fac-adres-label">Aan</div>
+          <div class="fac-adres-naam">${f.bedrijfsnaam}</div>
+          T.a.v. ${f.contactpersoon}<br>
+          ${f.straat}<br>
+          ${f.postcode} &nbsp;${f.woonplaats.toUpperCase()}
+        </div>
+        <div>
+          <div class="fac-adres-label">Van</div>
+          <div class="fac-adres-naam">Handbalvereniging VOC Amsterdam</div>
+          p/a Nachtegaalstraat 64<br>
+          1021 GC AMSTERDAM
+        </div>
+      </div>
+
+      <div class="fac-meta">
+        <table>
+          <tr><td>Amsterdam,</td><td>${f.datum}</td></tr>
+          <tr><td>Factuurnummer:</td><td><strong>${f.facNr}</strong></td></tr>
+          <tr><td>Onderwerp:</td><td>Advertentie VOC Magazine seizoen 2025-2026</td></tr>
+        </table>
+      </div>
+
+      <div class="fac-aanhef">Geachte ${f.contactpersoon},</div>
+      <div class="fac-intro">Hartelijk dank voor uw interesse in het adverteren in het VOC Magazine. Hierbij brengen wij u het volgende in rekening:</div>
+
+      <table class="fac-tabel">
+        <thead>
+          <tr>
+            <th style="text-align:left">Omschrijving</th>
+            <th style="text-align:right">Bedrag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${formatNaamStr} — VOC Magazine seizoen 2025-2026${f.opmerking ? '<br><span style="font-size:11px;color:#888">'+f.opmerking+'</span>' : ''}</td>
+            <td style="text-align:right">€ ${f.bedrag},-</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="fac-totaal-rij" style="border-top:2px solid #ddd">
+            <td>Totaal (incl. BTW)</td>
+            <td class="fac-totaal-bedrag" style="text-align:right">€ ${f.bedrag},-</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="fac-betaal">
+        <strong>Betalingsinformatie</strong>
+        Wij verzoeken u vriendelijk om dit bedrag binnen <strong>14 dagen</strong> over te maken op onderstaand bankrekeningnummer o.v.v. het factuurnummer <strong>${f.facNr}</strong>.<br><br>
+        IBAN: <strong>${IBAN}</strong> &nbsp;·&nbsp; t.n.v. VOC Amsterdam &nbsp;·&nbsp; BIC: ${BIC}
+      </div>
+
+      <div class="fac-groet">
+        Met vriendelijke groet,<br><br>
+        André Zeldenthuis<br>
+        Voorzitter / Penningmeester a.i.<br>
+        Handbalvereniging VOC Amsterdam<br>
+        p/a Nachtegaalstraat 64<br>
+        1021 GC AMSTERDAM
+      </div>
+
+      <div class="fac-footer">
+        Handbalvereniging VOC Amsterdam · KvK nummer ${KVK} · Website: www.voc-handbal.nl<br>
+        BTW nummer: ${BTW} · Rekeningnummer: 1809395 t.n.v. VOC Amsterdam<br>
+        IBAN nummer: ${IBAN} · SWIFT / BIC Code: ${BIC}<br>
+        Secretariaat: Nachtegaalstraat 64, 1021 GC Amsterdam
+      </div>
+    `;
+    document.getElementById('factuurOverlay').classList.add('show');
+  }
+
+  function sluitModal() {
+    document.getElementById('factuurOverlay').classList.remove('show');
+  }
+
+  function printFactuur() {
+    window.print();
+  }
+
+  function resetForm() {
+    document.querySelectorAll('.prijs-card').forEach(c => c.classList.remove('selected'));
+    geselecteerdFormaat = null; geselecteerdBedrag = 0;
+    ['bedrijfsnaam','contactpersoon','straat','postcode','woonplaats','email','telefoon','opmerking'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('factuurMeta').style.display = 'none';
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tab-nieuw').style.display = tab === 'nieuw' ? 'block' : 'none';
+    document.getElementById('tab-overzicht').style.display = tab === 'overzicht' ? 'block' : 'none';
+    document.getElementById('tabNieuw').style.background = tab === 'nieuw' ? 'var(--green-800)' : 'white';
+    document.getElementById('tabNieuw').style.color = tab === 'nieuw' ? 'white' : 'var(--text)';
+    document.getElementById('tabNieuw').style.borderColor = tab === 'nieuw' ? 'var(--green-800)' : 'var(--gray-200)';
+    document.getElementById('tabOverzicht').style.background = tab === 'overzicht' ? 'var(--green-800)' : 'white';
+    document.getElementById('tabOverzicht').style.color = tab === 'overzicht' ? 'white' : 'var(--text)';
+    document.getElementById('tabOverzicht').style.borderColor = tab === 'overzicht' ? 'var(--green-800)' : 'var(--gray-200)';
+    if (tab === 'overzicht') renderOverzicht();
+  }
+
+  function renderOverzicht() {
+    const c = document.getElementById('factuurLijst');
+    const totaal = facturen.reduce((s, f) => s + f.bedrag, 0);
+    document.getElementById('overzichtStats').textContent = `${facturen.length} facturen · totaal € ${totaal},-`;
+    if (!facturen.length) {
+      c.innerHTML = '<div class="empty">📭 Nog geen facturen aangemaakt</div>';
+      return;
+    }
+    c.innerHTML = [...facturen].reverse().map(f => `
+      <div class="factuur-item">
+        <div style="flex:1;min-width:0">
+          <div class="fi-naam">${f.bedrijfsnaam}</div>
+          <div class="fi-detail">T.a.v. ${f.contactpersoon} · ${f.straat}, ${f.postcode} ${f.woonplaats}</div>
+          <div class="fi-detail">${formatNaam(f.formaat)} · ${f.datum}</div>
+          <div class="fi-actions">
+            <button class="fi-btn fi-btn-view" onclick='toonFactuur(${JSON.stringify(f)})'>👁 Bekijken</button>
+          </div>
+        </div>
+        <div class="fi-right">
+          <div class="fi-bedrag">€ ${f.bedrag},-</div>
+          <div class="fi-nr">${f.facNr}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Sluit modal bij klik buiten
+  document.getElementById('factuurOverlay').addEventListener('click', function(e) {
+    if (e.target === this) sluitModal();
+  });
+</script>
+</body>
+</html>
